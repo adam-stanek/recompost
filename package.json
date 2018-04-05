@@ -1,0 +1,21 @@
+{
+  "name": "recompost",
+  "version": "0.1.O",
+  "dependencies": {
+    "@types/react": "^16",
+    "recompose": "^0.25.0",
+    "lodash.omit": "^4.5.0"
+  },
+  "devDependencies": {
+    "@types/lodash.omit": "^4.5.3",
+    "@types/recompose": "^0.24.7",
+    "prettier": "^1.11.1",
+    "typescript": "^2.8.1",
+    "typings-checker": "^2.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p bindings",
+    "test": "typings-checker test/*.ts",
+    "prettier": "prettier --write \"bindings/**/*.ts\" \"test/**/*.ts\" README.md tsconfig.json .prettierrc"
+  }
+}

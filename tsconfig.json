@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": ["es6"],
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "recompost": ["index"]
+    }
+  },
+  "include": ["bindings/*.ts", "test/**/*.ts"]
+}

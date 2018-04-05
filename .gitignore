@@ -1,0 +1,7 @@
+/node_modules
+/npm-debug.log
+.DS_Store
+/bindings/*.js
+/bindings/*.d.ts
+/yarn-error.log
+/.vscode

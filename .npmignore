@@ -1,0 +1,6 @@
+*
+!/README.md
+!/abstract.d.ts
+!/index.d.ts
+!/index.js
+!/bindings/recompose.{d.ts,js}
