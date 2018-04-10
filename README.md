@@ -18,7 +18,7 @@ infer types and avoid messing your code with `<any>` or unnecessary interfaces.
 
 # How to use it
 
-Lets start with example:
+Lets start with an example:
 
 ```.ts
 import * as React from 'react'
@@ -58,7 +58,7 @@ the component.
 The call of generated `enhance()` method accept an actual stateless component
 which will receive props which are result of all applied component decorators.
 They are applied one by one and each can add, remove or override the props. We
-call it the resulting props but you may also heard the term inner props or
+call it the resulting props but you may also heard about them as inner props or
 decorated props.
 
 ## Adding props
@@ -73,8 +73,8 @@ decorated props.
 ```
 
 Decorator `withProps()` allows to pass additional props either by their
-call-time value or by creating derived values from component props (either own
-or created as result of previous decorators).
+call-time value or by creating derived values from component props (own or
+created as result of previous decorators).
 
 Decorator `withPropsOnChange()` offers performance optimization for derived prop
 factories. You can use it for example to sort items or perform other operations
@@ -85,8 +85,12 @@ which you don't want to run on each render.
 ```.tsx
 // .omitProps(propsToOmit: Array<keyof TPreviousProps>)
 
-const enhance = createComposer<{ type: string, className: string }>()
-  .withProps(({ type, className }) => ({ className: [type && `MyComponent--${type}`, className].filter(c => c).join(' ') }))
+interface MyComponentProps extends React.HTMLProps<HTMLDivElement> {
+  kind: string
+}
+
+const enhance = createComposer<MyComponentProps>()
+  .withProps(({ kind, className }) => ({ className: [kind && `MyComponent--${kind}`, className].filter(c => c).join(' ') }))
   .omitProps('type')
   .build()
 
@@ -115,9 +119,9 @@ only define default props for the actual input props not props created by
 chained decorators.
 
 As a side-effect this function removes `undefined` type from the resulting
-defaulted props. This means that the component at the example will retrieve
-props in shape `{ type: string }` instead of usual
-`{ type?: string | undefined }` which may help a lot while running TS in strict
+defaulted props. This means that the component from the example will receive
+props in shape `{ type: string }` instead of `{ type?: string | undefined }`
+defined by the initial props. This may help a lot while running TS in strict
 mode.
 
 ## Handlers
@@ -184,7 +188,7 @@ const Counter = enhance(({
 ```
 
 Creates two additional props to the base component: a state value, and a
-function to update that state value. The type of the prop is determined from the
+function to update that state value. The type of the prop is inferred from the
 passed initial value which may be optionally specified using mapper function
 from component's props.
 
@@ -209,7 +213,8 @@ The mapper function allows compiler to determine context type and to create
 possibly derived properties.
 
 This library doesn't provide any means to actually create/pass context property
-down the render tree. It is expected that you create class component for this.
+down the render tree. It is recommended that you create class component for
+this.
 
 ## Lifecycle
 
@@ -251,10 +256,10 @@ Decorator `pure()` enhances component with `shouldComponentUpdate` lifecycle
 method which only allows updating component when identity of some prop changed.
 
 Decorator `onlyUpdateForProps()` enhances component with `shouldComponentUpdate`
-lifecycle method which only allows updating component when identity of mentioned
-prop changed.
+lifecycle method which only allows updating component when identity of one of
+the given props changed.
 
-Decorator `shouldUpdate()` enhances component with passed
+Decorator `shouldUpdate()` enhances component with custom
 `shouldComponentUpdate` lifecycle method.
 
 ## Custom decorators and chaining
@@ -269,7 +274,7 @@ The `append()` allows user to chain multiple composers (without the need to call
 single one (like recompact).
 
 The `withDecorator()` allows to enhance component by previously built decorator
-(or by any other decorator not build by recompost).
+(or by any other decorator not built by recompost).
 
 You can use the template parameter to specify the type of injected properties.
 Here is an example:
@@ -287,7 +292,7 @@ const MyComponent = ({ intl: { formatMessage }}) => (
 ```
 
 This can be useful for third-party components. However if you need to use some
-existing decorators not build by recompose it is recommended to cast the
+existing decorators not built by recompost it is recommended to cast the
 decorators into `ComponentDecorator`. It is a special type which is used by
 recompost to hold information about prop requirements. It takes 3 parameters:
 
@@ -306,12 +311,12 @@ Here is an example:
 ```.ts
 import { createComposer, ComponentDecorator } from 'recompost'
 
-// This is for demonstrating some legacy code, please do not take this as an example
+// This is for demonstrating some legacy code, please do not take this as an example of correct code
 const someLegacyBadlyTypedDecorator = (component: React.Component<any>) => ({ name, ...props }: any) => React.createElement(component, { ...props, salutation: `Hey, ${name}!` })
 
-// We retype that decorator so that it the .withDecorator can infer what it does it do
-// Note: The any cast might not be necessary depending on the actual type of the decorator. This just
-// to be on the safe side for the demonstration.
+// We retype that decorator so that the `.withDecorator()` can infer what it does
+// Note: The any cast might not be necessary depending on the actual type of the decorator. This is just
+// to be on the safe side for the demonstration purposes.
 const typedDecorator: ComponentDecorator<
   { name: string },       // It requires `name`
   { salutation: string }, // It produces `salutation`
@@ -324,6 +329,11 @@ const enhance = createComposer<{ name: string }>
   .withDecorator(typedDecorator)
   .build()
 ```
+
+# Who uses Recompost
+
+* [Ataccama Software, s.r.o.](https://www.ataccama.com/)
+* [V3Net.cz, s.r.o.](http://www.v3net.cz)
 
 # Credits
 
