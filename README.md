@@ -1,4 +1,4 @@
-<img src="https://github.com/adam-stanek/recompost/raw/master/docs/logo.svg" width="400" alt="Recompost">
+<img src="https://github.com/adam-stanek/recompost/raw/master/docs/logo.svg?sanitize=true" width="400" alt="Recompost">
 
 Typed binding for `recompose`/`recompact` functions with
 [fluent interface](https://en.wikipedia.org/wiki/Fluent_interface) builder
