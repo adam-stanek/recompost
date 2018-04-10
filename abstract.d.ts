@@ -129,16 +129,6 @@ export interface ComponentDecoratorBuilder<
   ): ComponentDecoratorBuilder<TInitialProps, TResultingProps & T3, TOmittedProps>
 
   /**
-   * Similar to withProps(). Allows to create additional props if specified existing prop changed.
-   *
-   * Further info: https://neoziro.github.io/recompact/#withpropsonchangeshouldmaporkeys-createprops
-   */
-  withPropsOnChange<T3>(
-    propName: keyof TResultingProps,
-    createProps: (props: TResultingProps) => T3,
-  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps & T3, TOmittedProps>
-
-  /**
    * Similar to withProps(). Allows to create additional props if any of specified existing props changed.
    *
    * Further info: https://neoziro.github.io/recompact/#withpropsonchangeshouldmaporkeys-createprops
@@ -266,8 +256,8 @@ export interface ComponentDecoratorBuilder<
    * This is a much better optimization than the popular approach of using PureRenderMixin, shouldPureComponentUpdate(), or pure() helper,
    * because those tools compare every prop, whereas onlyUpdateForKeys() only cares about the props that you specify.
    */
-  onlyUpdateForKeys<T3 extends keyof TResultingProps>(
-    propName: T3 | T3[],
+  onlyUpdateForProps(
+    propNames: Array<keyof TResultingProps>,
   ): ComponentDecoratorBuilder<TInitialProps, TResultingProps, TOmittedProps>
 
   /**
