@@ -1,6 +1,12 @@
 {
   "name": "recompost",
   "version": "0.1.O",
+  "author": "Adam Staněk <adam.stanek@v3net.cz>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:adam-stanek/recompost.git"
+  },
   "dependencies": {
     "@types/react": "^16",
     "recompose": "^0.25.0",
