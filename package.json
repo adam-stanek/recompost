@@ -1,6 +1,6 @@
 {
   "name": "recompost",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Adam Staněk <adam.stanek@v3net.cz>",
   "license": "MIT",
   "repository": {
@@ -11,8 +11,8 @@
   "typings": "index.d.ts",
   "dependencies": {
     "@types/react": "^16",
-    "recompose": "^0.25.0",
-    "lodash.omit": "^4.5.0"
+    "lodash.omit": "^4.5.0",
+    "recompose": "^0.25.0"
   },
   "devDependencies": {
     "@types/lodash.omit": "^4.5.3",
