@@ -55,7 +55,10 @@ export interface LifecycleMethods<TProps> {
     prevState: any,
   ) => void
   componentWillUnmount?: (this: LifecycleMethodsThis<TProps>) => void
+  componentDidCatch?: (this: LifecycleMethodsThis<TProps>, error: Error, errorInfo: React.ErrorInfo) => void
 }
+
+
 /**
  * Fluent interface to allow composition of multiple higher-order components into single decorator.
  * This is an Typescript enabled replacement for compose()
