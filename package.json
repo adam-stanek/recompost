@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:adam-stanek/recompost.git"
+    "url": "git://github.com/adam-stanek/recompost.git"
   },
   "main": "index.js",
   "typings": "index.d.ts",
