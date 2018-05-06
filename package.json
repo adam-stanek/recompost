@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "tsc -p bindings",
-    "test": "typings-checker test/*.ts",
+    "test": "typings-checker --allow-expect-error test/*.ts",
     "prettier": "prettier --write \"bindings/**/*.ts\" \"test/**/*.ts\" README.md tsconfig.json .prettierrc"
   }
 }

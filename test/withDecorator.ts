@@ -16,3 +16,10 @@ enhance(({ children, ...props }) => {
 
   return null
 })
+
+// The decorator uses both props `a` and `b`, but it is applied on component which only
+// declares `b`. This should cause an error.
+createComposer<{ a: number }>()
+  // $ExpectError Type 'ComponentClass<{ a: number; b: number; }>' provides no match for the signature '(props: { a: number; } & { children?: ReactNode; }, context?: any): ReactElement<any> | null'.
+  .withDecorator(customDecorator)
+  .build()

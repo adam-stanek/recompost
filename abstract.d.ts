@@ -68,29 +68,15 @@ export interface ComponentDecoratorBuilder<
   /**
    * Allows to apply custom decorators.
    */
-  // We treat resulting props in additive way. This may not always be the intention but
-  // we want to avoid need to specify ALL resulting props. If we ever need that we should
-  // probably create some special method for it - ie. mapProps.
-  withDecorator<TDecoratedProps = {}>(
-    decorator: (
-      decoratedComponent: DecoratedComponent<TDecoratedProps>,
-    ) => React.ComponentClass<TResultingProps> | React.SFC<TResultingProps>,
-  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps & TDecoratedProps, TOmittedProps>
-
-  /**
-   * Allows to apply custom decorators.
-   */
-  // We provide special overloaded version of withDecorator for decorators built by the ComponentDecoratorBuilder.
-  // It helps compiler to resolve nested generics and allows developer to avoid explicit typing.
-  // This basically does what append() does but with built decorator.
-  // Notice: This must be the last of all overloaded variants. Otherwise the typed chain gets broken if
-  // the developer cast the argument to any (ie. for work-in-progress types).
   withDecorator<
-    TInitialProps2 extends Partial<TResultingProps>,
-    TResultingProps2,
-    TOmittedProps2 extends string
+    TResultingProps2 = {},
+    TOmittedProps2 extends string = never
   >(
-    decorator: ComponentDecorator<TInitialProps2, TResultingProps2, TOmittedProps2>,
+    decorator:
+      | ComponentDecorator<TResultingProps, TResultingProps2, TOmittedProps2>
+      | ((
+          baseComponent: DecoratedComponent<TResultingProps2>,
+        ) => React.ComponentClass<TResultingProps> | React.SFC<TResultingProps>),
   ): ComponentDecoratorBuilder<
     TInitialProps,
     Pick<TResultingProps, Exclude<keyof TResultingProps, TOmittedProps2>> & TResultingProps2,
