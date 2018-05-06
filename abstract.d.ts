@@ -73,10 +73,8 @@ export interface ComponentDecoratorBuilder<
     TOmittedProps2 extends string = never
   >(
     decorator:
-      | ComponentDecorator<TResultingProps, TResultingProps2, TOmittedProps2>
-      | ((
-          baseComponent: DecoratedComponent<TResultingProps2>,
-        ) => React.ComponentClass<TResultingProps> | React.SFC<TResultingProps>),
+      ComponentDecorator<TResultingProps, TResultingProps2, TOmittedProps2>
+      | GenericComponentDecorator<TResultingProps, TResultingProps2, TOmittedProps2>
   ): ComponentDecoratorBuilder<
     TInitialProps,
     Pick<TResultingProps, Exclude<keyof TResultingProps, TOmittedProps2>> & TResultingProps2,
@@ -311,4 +309,16 @@ export interface ComponentDecorator<
     Simplify<DecoratedComponentProps<TActualInitialProps, TResultingProps, TOmittedProps>>
     >,
   ): React.ComponentClass<TActualInitialProps>
+}
+
+export interface GenericComponentDecorator<
+  TRequiredInitialProps,
+  TResultingProps,
+  TOmittedProps extends string = never
+> {
+  <TActualInitialProps extends TRequiredInitialProps = TRequiredInitialProps>(
+    component: DecoratedComponent<
+    Simplify<DecoratedComponentProps<TActualInitialProps, TResultingProps, TOmittedProps>>
+    >,
+  ): React.ComponentClass<TActualInitialProps> | React.SFC<TActualInitialProps>
 }

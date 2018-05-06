@@ -20,6 +20,6 @@ enhance(({ children, ...props }) => {
 // The decorator uses both props `a` and `b`, but it is applied on component which only
 // declares `b`. This should cause an error.
 createComposer<{ a: number }>()
-  // $ExpectError Type 'ComponentClass<{ a: number; b: number; }>' provides no match for the signature '(props: { a: number; } & { children?: ReactNode; }, context?: any): ReactElement<any> | null'.
+  // $ExpectError Type 'DecoratedSFC<Pick<DecoratedComponentProps<TActualInitialProps, { result: number; }, "a" | "b">, "...' provides no match for the signature 'new (props: Pick<DecoratedComponentProps<{ a: number; b: number; }, { result: number; }, "a" | "b">, "result">, context?: any): Component<any, any, never>'.
   .withDecorator(customDecorator)
   .build()
