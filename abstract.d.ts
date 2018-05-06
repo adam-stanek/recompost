@@ -55,7 +55,10 @@ export interface LifecycleMethods<TProps> {
     prevState: any,
   ) => void
   componentWillUnmount?: (this: LifecycleMethodsThis<TProps>) => void
+  componentDidCatch?: (this: LifecycleMethodsThis<TProps>, error: Error, errorInfo: React.ErrorInfo) => void
 }
+
+
 /**
  * Fluent interface to allow composition of multiple higher-order components into single decorator.
  * This is an Typescript enabled replacement for compose()
@@ -262,6 +265,13 @@ export interface ComponentDecoratorBuilder<
    */
   withLifecycle(
     lifecycleMethods: LifecycleMethods<TResultingProps>,
+  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps, TOmittedProps>
+
+  /**
+   * Assigns to the displayName property on the base component.
+   */
+  withDisplayName(
+    displayName: string
   ): ComponentDecoratorBuilder<TInitialProps, TResultingProps, TOmittedProps>
 
   /**
