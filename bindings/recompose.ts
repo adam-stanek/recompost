@@ -12,6 +12,7 @@ import {
   withState,
   pure,
   lifecycle,
+  setDisplayName,
 } from 'recompose'
 import omit from 'lodash.omit'
 
@@ -52,6 +53,7 @@ class RecompactComponentDecoratorBuilder<
   public onlyUpdateForKeys = createWrapper(onlyUpdateForKeys)
   public shouldUpdate = createWrapper(shouldUpdate)
   public withHandlers = createWrapper(withHandlers)
+  public withDisplayName = createWrapper(setDisplayName)
 
   public append = ((another: RecompactComponentDecoratorBuilder<any>) => {
     return new RecompactComponentDecoratorBuilder(

@@ -268,6 +268,13 @@ export interface ComponentDecoratorBuilder<
   ): ComponentDecoratorBuilder<TInitialProps, TResultingProps, TOmittedProps>
 
   /**
+   * Assigns to the displayName property on the base component.
+   */
+  withDisplayName(
+    displayName: string
+  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps, TOmittedProps>
+
+  /**
    * Ensures component won't get rerendered unless identity of some prop changes.
    */
   pure(): ComponentDecoratorBuilder<TInitialProps, TResultingProps, TOmittedProps>
