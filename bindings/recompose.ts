@@ -28,7 +28,7 @@ const identity = <T>(value: T) => value
 // but we still need to be able to set context requirements.
 const propTypeStub: React.Validator<any> = () => null
 
-const createDefaultProps = (a: object | undefined, b: object | undefined) =>
+const safelyMergeObj = (a: object | undefined, b: object | undefined) =>
   a && b ? Object.assign({}, a, b) : a || b
 
 const createWrapper = (fn: any) => {
@@ -36,8 +36,9 @@ const createWrapper = (fn: any) => {
     return new RecompactComponentDecoratorBuilder( // tslint:disable-line
       [...this.funcs, fn(...args)],
       this.defaultProps,
+      this.staticProps,
     )
-  } as any
+  }
 }
 
 // noinspection Annotator
@@ -55,31 +56,43 @@ class RecompactComponentDecoratorBuilder<
   public withHandlers = createWrapper(withHandlers)
   public withDisplayName = createWrapper(setDisplayName)
 
-  public append = ((another: RecompactComponentDecoratorBuilder<any>) => {
+  public append = (another: RecompactComponentDecoratorBuilder<any>) => {
     return new RecompactComponentDecoratorBuilder(
       [...this.funcs, ...another.funcs],
-      createDefaultProps(this.defaultProps, another.defaultProps),
+      safelyMergeObj(this.defaultProps, another.defaultProps),
+      safelyMergeObj(this.staticProps, another.staticProps),
     )
-  }) as any
+  }
 
-  public withDefaultProps = ((defaultProps: {}) => {
+  public withDefaultProps = (defaultProps: {}) => {
     return new RecompactComponentDecoratorBuilder(
       this.funcs,
       this.defaultProps
         ? { ...(this.defaultProps as {}), ...defaultProps }
         : defaultProps,
+      this.staticProps,
     )
-  }) as any
+  }
+
+  public withStatic = (staticProps: { [k: string]: any }) => {
+    return new RecompactComponentDecoratorBuilder(
+      this.funcs,
+      this.defaultProps,
+      this.staticProps ? { ...this.staticProps, ...staticProps } : staticProps,
+    )
+  }
 
   constructor(
     private funcs: any[],
-    private defaultProps?: Partial<TInitialProps>,
+    private defaultProps: Partial<TInitialProps> | undefined,
+    private staticProps: { [k: string]: any } | undefined,
   ) {}
 
   public withDecorator(decorator: any) {
     return new RecompactComponentDecoratorBuilder(
       [...this.funcs, decorator],
       this.defaultProps,
+      this.staticProps,
     )
   }
 
@@ -87,6 +100,7 @@ class RecompactComponentDecoratorBuilder<
     return new RecompactComponentDecoratorBuilder(
       [...this.funcs, withHandlers({ [k]: f })],
       this.defaultProps,
+      this.staticProps,
     )
   }
 
@@ -94,6 +108,7 @@ class RecompactComponentDecoratorBuilder<
     return new RecompactComponentDecoratorBuilder(
       [...this.funcs, mapProps((props: {}) => omit(props, keys))],
       this.defaultProps,
+      this.staticProps,
     )
   }
 
@@ -101,6 +116,7 @@ class RecompactComponentDecoratorBuilder<
     return new RecompactComponentDecoratorBuilder(
       [...this.funcs, getContext({ [propName]: propTypeStub })],
       this.defaultProps,
+      this.staticProps,
     )
   }
 
@@ -108,6 +124,7 @@ class RecompactComponentDecoratorBuilder<
     return new RecompactComponentDecoratorBuilder(
       [...this.funcs, lifecycle(lifecycleMethods)],
       this.defaultProps,
+      this.staticProps,
     )
   }
 
@@ -116,15 +133,11 @@ class RecompactComponentDecoratorBuilder<
       TInitialProps,
       TResultingProps,
       TOmittedProps
-    >([...this.funcs, pure], this.defaultProps)
+    >([...this.funcs, pure], this.defaultProps, this.staticProps)
   }
 
-  public build(): ComponentDecorator<
-    TInitialProps,
-    TResultingProps,
-    TOmittedProps
-  > {
-    return ((component: React.SFC<any> | React.ComponentClass<any>) => {
+  public build() {
+    return (component: React.SFC<any> | React.ComponentClass<any>) => {
       // Apply all the decorators
       const enhancedComponent = this.funcs.reduce(
         (a, b) => (...args: any[]) => a(b(...args)),
@@ -132,16 +145,22 @@ class RecompactComponentDecoratorBuilder<
       )(component) as React.ComponentClass<any>
 
       // Set defaultProps on the enhanced component while copying the defaultProps of the original component
-      enhancedComponent.defaultProps = createDefaultProps(
+      enhancedComponent.defaultProps = safelyMergeObj(
         component.defaultProps,
         this.defaultProps,
       )
 
+      if (this.staticProps) {
+        for (const k in this.staticProps) {
+          ;(enhancedComponent as { [k: string]: any })[k] = this.staticProps[k]
+        }
+      }
+
       return enhancedComponent
-    }) as any
+    }
   }
 }
 
 export function createComposer<T>(): ComponentDecoratorBuilder<T> {
-  return new RecompactComponentDecoratorBuilder([]) as any
+  return new RecompactComponentDecoratorBuilder([], undefined, undefined) as any
 }
