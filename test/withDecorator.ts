@@ -6,12 +6,16 @@ declare const customDecorator: ComponentDecorator<
   'a' | 'b'
 >
 
-const enhance = createComposer<{ a: number; b: number }>()
+const enhance = createComposer<{
+  a: number
+  b: number
+  someOtherProp: boolean
+}>()
   .withDecorator(customDecorator)
   .build()
 
 enhance(({ children, ...props }) => {
-  // $ExpectType { result: number; }
+  // $ExpectType { result: number; someOtherProp: boolean; }
   props
 
   return null
@@ -20,6 +24,6 @@ enhance(({ children, ...props }) => {
 // The decorator uses both props `a` and `b`, but it is applied on component which only
 // declares `b`. This should cause an error.
 createComposer<{ a: number }>()
-  // $ExpectError Type 'DecoratedSFC<Pick<DecoratedComponentProps<TActualInitialProps, { result: number; }, "a" | "b">, "...' provides no match for the signature 'new (props: Pick<DecoratedComponentProps<{ a: number; b: number; }, { result: number; }, "a" | "b">, "result">, context?: any): Component<any, any, never>'.
+  // $ExpectError Type 'DecoratedSFC<{ a: number; b: number; }>' provides no match for the signature 'new (props: { a: number; }, context?: any): Component<any, any, never>'.
   .withDecorator(customDecorator)
   .build()

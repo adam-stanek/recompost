@@ -1,6 +1,6 @@
 import { createComposer, ComponentDecorator } from 'recompost'
 
-declare function withSalutation<TProps extends {}>(
+declare function withSalutation<TProps extends {} = TProps>(
   salutationFromProps: (props: TProps) => string,
 ): ComponentDecorator<TProps, { salutation: string }>
 
