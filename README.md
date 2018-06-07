@@ -330,6 +330,62 @@ const enhance = createComposer<{ name: string }>
   .build()
 ```
 
+# Static props
+
+```.ts
+// .withState(staticProps: { [k: string]: any })
+// .withDisplayName(name: string)
+```
+
+If you want to add static properties to the resulting component in type safe
+manner you can use `withStatic()`. It accepts dictionary of properties which
+will then be assigned as static properties when `build()` is called.
+
+Here is an example of themeable button which uses static properties to wrap
+component together with some theme enumeration.
+
+```.ts
+import { createComposer } from 'recompost'
+
+// Notice that we are not using `const enum` here. It is important so that TS will
+// generate JS object from it.
+export enum ButtonTheme {
+  Light = 'light',
+  Dark = 'dark'
+}
+
+export interface ButtonProps {
+  theme: ButtonTheme
+}
+
+const enhance = createComposer<ButtonProps>()
+  .withDefaultProps({
+    theme: ButtonTheme.Light,
+  })
+  .withStatic({
+    Themes: ButtonTheme // Using enum like a value here
+  })
+  .build()
+
+const Button = enhance(
+  ({ theme, children }) =>
+  <div className={`Button-${theme}`}>{children}</div>
+)
+```
+
+Thanks to static properties you have all you need encapsulated within the
+`Button` component so that you can use it like this:
+
+```.tsx
+import { Button } from './button'
+
+<Button theme={Button.Themes.Dark}>Click me!</Button>
+```
+
+The `withDisplayName()` can be used as a shortcut for
+`withStatic({ displayName: /* ... */ })`.
+
+```
 # Who uses Recompost
 
 * [Ataccama Software, s.r.o.](https://www.ataccama.com/)
@@ -338,3 +394,4 @@ const enhance = createComposer<{ name: string }>
 # Credits
 
 My thanks to the [@belaczek](https://github.com/belaczek) for the logo :)
+```
