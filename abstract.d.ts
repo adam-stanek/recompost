@@ -55,9 +55,12 @@ export interface LifecycleMethods<TProps> {
     prevState: any,
   ) => void
   componentWillUnmount?: (this: LifecycleMethodsThis<TProps>) => void
-  componentDidCatch?: (this: LifecycleMethodsThis<TProps>, error: Error, errorInfo: React.ErrorInfo) => void
+  componentDidCatch?: (
+    this: LifecycleMethodsThis<TProps>,
+    error: Error,
+    errorInfo: React.ErrorInfo,
+  ) => void
 }
-
 
 /**
  * Fluent interface to allow composition of multiple higher-order components into single decorator.
@@ -71,17 +74,14 @@ export interface ComponentDecoratorBuilder<
   /**
    * Allows to apply custom decorators.
    */
-  withDecorator<
-    TResultingProps2 = {},
-    TOmittedProps2 extends string = never
-  >(
-    decorator:
-      ComponentDecorator<TResultingProps, TResultingProps2, TOmittedProps2>
-      | GenericComponentDecorator<TResultingProps, TResultingProps2, TOmittedProps2>
+  withDecorator<TDR extends {} = {}, TDO extends string = never>(
+    t:
+      | GenericComponentDecorator<TDR, TResultingProps>
+      | ComponentDecorator<TResultingProps, TDR, TDO>,
   ): ComponentDecoratorBuilder<
     TInitialProps,
-    Pick<TResultingProps, Exclude<keyof TResultingProps, TOmittedProps2>> & TResultingProps2,
-    TOmittedProps | TOmittedProps2
+    Pick<TResultingProps, Exclude<keyof TResultingProps, TDO>> & TDR,
+    TOmittedProps | TDO
   >
 
   /**
@@ -92,10 +92,15 @@ export interface ComponentDecoratorBuilder<
     TResultingProps2,
     TOmittedProps2 extends string
   >(
-    decoratorBuilder: ComponentDecoratorBuilder<TInitialProps2, TResultingProps2, TOmittedProps2>,
+    decoratorBuilder: ComponentDecoratorBuilder<
+      TInitialProps2,
+      TResultingProps2,
+      TOmittedProps2
+    >,
   ): ComponentDecoratorBuilder<
     TInitialProps,
-    Pick<TResultingProps, Exclude<keyof TResultingProps, TOmittedProps2>> & TResultingProps2,
+    Pick<TResultingProps, Exclude<keyof TResultingProps, TOmittedProps2>> &
+      TResultingProps2,
     TOmittedProps | TOmittedProps2
   >
 
@@ -106,7 +111,11 @@ export interface ComponentDecoratorBuilder<
    */
   withProps<T3>(
     createProps: (props: TResultingProps) => T3,
-  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps & T3, TOmittedProps>
+  ): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps & T3,
+    TOmittedProps
+  >
 
   /**
    * Allows to pass additional props.
@@ -115,7 +124,11 @@ export interface ComponentDecoratorBuilder<
    */
   withProps<T3>(
     props: T3,
-  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps & T3, TOmittedProps>
+  ): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps & T3,
+    TOmittedProps
+  >
 
   /**
    * Similar to withProps(). Allows to create additional props if any of specified existing props changed.
@@ -125,7 +138,11 @@ export interface ComponentDecoratorBuilder<
   withPropsOnChange<T3>(
     propNames: Array<keyof TResultingProps>,
     createProps: (props: TResultingProps) => T3,
-  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps & T3, TOmittedProps>
+  ): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps & T3,
+    TOmittedProps
+  >
 
   /**
    * Similar to withProps(). Allows to create additional props if given callback decides that it should
@@ -134,9 +151,16 @@ export interface ComponentDecoratorBuilder<
    * Further info: https://neoziro.github.io/recompact/#withpropsonchangeshouldmaporkeys-createprops
    */
   withPropsOnChange<T3>(
-    shouldCreateProps: (prevProps: TResultingProps, nextProps: TResultingProps) => boolean,
+    shouldCreateProps: (
+      prevProps: TResultingProps,
+      nextProps: TResultingProps,
+    ) => boolean,
     createProps: (props: TResultingProps) => T3,
-  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps & T3, TOmittedProps>
+  ): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps & T3,
+    TOmittedProps
+  >
 
   /**
    * Sets defaultProps on the resulting component while updating the type definition to see given props as always defined.
@@ -160,7 +184,11 @@ export interface ComponentDecoratorBuilder<
   withPropFromContext<TPropName extends string, TProps>(
     propName: TPropName,
     createProps: (propValue: any) => TProps,
-  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps & TProps, TOmittedProps>
+  ): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps & TProps,
+    TOmittedProps
+  >
 
   /**
    * Prevents any given previously set properties to be passed to base component.
@@ -221,7 +249,11 @@ export interface ComponentDecoratorBuilder<
   withHandler<T3 extends string, T4 extends Function>(
     handlerName: T3,
     handler: (props: TResultingProps) => T4,
-  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps & { [k in T3]: T4 }, TOmittedProps>
+  ): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps & { [k in T3]: T4 },
+    TOmittedProps
+  >
 
   /**
    * Takes an object map of handler creators or a factory function. They are defined as higher-order functions.
@@ -231,7 +263,9 @@ export interface ComponentDecoratorBuilder<
    * which results in a new handler on every render and breaks downstream shouldComponentUpdate()
    * optimizations that rely on prop equality.
    */
-  withHandlers<THandlers extends { [k: string]: (props: TResultingProps) => any }>(
+  withHandlers<
+    THandlers extends { [k: string]: (props: TResultingProps) => any }
+  >(
     handlers: THandlers | ((initialProps: TResultingProps) => THandlers),
   ): ComponentDecoratorBuilder<
     TInitialProps,
@@ -271,13 +305,17 @@ export interface ComponentDecoratorBuilder<
    * Assigns to the displayName property on the base component.
    */
   withDisplayName(
-    displayName: string
+    displayName: string,
   ): ComponentDecoratorBuilder<TInitialProps, TResultingProps, TOmittedProps>
 
   /**
    * Ensures component won't get rerendered unless identity of some prop changes.
    */
-  pure(): ComponentDecoratorBuilder<TInitialProps, TResultingProps, TOmittedProps>
+  pure(): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps,
+    TOmittedProps
+  >
 
   /** Call this to create component decorator. */
   build(): ComponentDecorator<TInitialProps, TResultingProps, TOmittedProps>
@@ -298,37 +336,34 @@ export type DecoratedComponentProps<
 export type Simplify<T> = Pick<T, keyof T>
 
 export abstract class AbstractComponentDecorator<
-  TRequiredInitialProps,
   TResultingProps,
+  TInitialProps,
   TOmittedProps extends string
 > {
   // These are fake properties which allow us to chain decorators. They have no actual
   // runtime value. We just use them to pass static type info.
-  private __initialProps: TRequiredInitialProps
+  private __initialProps: TInitialProps
   private __omittedProps: TOmittedProps
   private __resultingProps: TResultingProps
 }
 
 export interface ComponentDecorator<
-  TRequiredInitialProps,
-  TResultingProps,
+  TInitialProps extends {} = any,
+  TResultingProps extends {} = {},
   TOmittedProps extends string = never
-> extends AbstractComponentDecorator<TRequiredInitialProps, TResultingProps, TOmittedProps> {
-  <TActualInitialProps extends TRequiredInitialProps = TRequiredInitialProps>(
-    component: DecoratedComponent<
-    Simplify<DecoratedComponentProps<TActualInitialProps, TResultingProps, TOmittedProps>>
+>
+  extends AbstractComponentDecorator<
+      TResultingProps,
+      TInitialProps,
+      TOmittedProps
     >,
-  ): React.ComponentClass<TActualInitialProps>
-}
+    GenericComponentDecorator<TResultingProps, TInitialProps> {}
 
 export interface GenericComponentDecorator<
-  TRequiredInitialProps,
-  TResultingProps,
-  TOmittedProps extends string = never
+  TResultingProps extends {} = {},
+  TInitialProps extends {} = {}
 > {
-  <TActualInitialProps extends TRequiredInitialProps = TRequiredInitialProps>(
-    component: DecoratedComponent<
-    Simplify<DecoratedComponentProps<TActualInitialProps, TResultingProps, TOmittedProps>>
-    >,
-  ): React.ComponentClass<TActualInitialProps> | React.SFC<TActualInitialProps>
+  (
+    component: DecoratedComponent<Simplify<TResultingProps>>,
+  ): DecoratedComponent<TInitialProps>
 }
