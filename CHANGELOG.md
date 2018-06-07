@@ -1,3 +1,9 @@
+# 1.2.0 (June 7, 2018)
+
+* Simplified typings for ComponentDecorator (now inherits from AbstractComponentDecorator and GenericComponentDecorator). This should help in TS to infer generics in some edge cases.
+* `withDecorator`: Fixed for generics in resulting props (see `tests/withDecoratorResultGenerics`)
+* Added `withStatic`
+
 # 1.1.0 (May 6, 2018)
 
 * Added CHANGELOG :)
