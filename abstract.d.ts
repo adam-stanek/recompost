@@ -69,19 +69,25 @@ export interface LifecycleMethods<TProps> {
 export interface ComponentDecoratorBuilder<
   TInitialProps,
   TResultingProps = TInitialProps,
-  TOmittedProps extends string = never
+  TOmittedProps extends string = never,
+  TStatic extends {} = {}
 > {
   /**
    * Allows to apply custom decorators.
    */
-  withDecorator<TDR extends {} = {}, TDO extends string = never>(
+  withDecorator<
+    TDR extends {} = {},
+    TDO extends string = never,
+    TDS extends {} = {}
+  >(
     t:
       | GenericComponentDecorator<TDR, TResultingProps>
-      | ComponentDecorator<TResultingProps, TDR, TDO>,
+      | ComponentDecorator<TResultingProps, TDR, TDO, TDS>,
   ): ComponentDecoratorBuilder<
     TInitialProps,
     Pick<TResultingProps, Exclude<keyof TResultingProps, TDO>> & TDR,
-    TOmittedProps | TDO
+    TOmittedProps | TDO,
+    TStatic & TDS
   >
 
   /**
@@ -90,18 +96,21 @@ export interface ComponentDecoratorBuilder<
   append<
     TInitialProps2 extends Partial<TResultingProps>,
     TResultingProps2,
-    TOmittedProps2 extends string
+    TOmittedProps2 extends string,
+    TStatic2 extends {}
   >(
     decoratorBuilder: ComponentDecoratorBuilder<
       TInitialProps2,
       TResultingProps2,
-      TOmittedProps2
+      TOmittedProps2,
+      TStatic2
     >,
   ): ComponentDecoratorBuilder<
     TInitialProps,
     Pick<TResultingProps, Exclude<keyof TResultingProps, TOmittedProps2>> &
       TResultingProps2,
-    TOmittedProps | TOmittedProps2
+    TOmittedProps | TOmittedProps2,
+    TStatic & TStatic2
   >
 
   /**
@@ -114,7 +123,8 @@ export interface ComponentDecoratorBuilder<
   ): ComponentDecoratorBuilder<
     TInitialProps,
     TResultingProps & T3,
-    TOmittedProps
+    TOmittedProps,
+    TStatic
   >
 
   /**
@@ -127,7 +137,8 @@ export interface ComponentDecoratorBuilder<
   ): ComponentDecoratorBuilder<
     TInitialProps,
     TResultingProps & T3,
-    TOmittedProps
+    TOmittedProps,
+    TStatic
   >
 
   /**
@@ -141,7 +152,8 @@ export interface ComponentDecoratorBuilder<
   ): ComponentDecoratorBuilder<
     TInitialProps,
     TResultingProps & T3,
-    TOmittedProps
+    TOmittedProps,
+    TStatic
   >
 
   /**
@@ -159,7 +171,8 @@ export interface ComponentDecoratorBuilder<
   ): ComponentDecoratorBuilder<
     TInitialProps,
     TResultingProps & T3,
-    TOmittedProps
+    TOmittedProps,
+    TStatic
   >
 
   /**
@@ -175,7 +188,8 @@ export interface ComponentDecoratorBuilder<
           ? Exclude<TResultingProps[k], undefined>
           : never
       },
-    TOmittedProps
+    TOmittedProps,
+    TStatic
   >
 
   /**
@@ -200,7 +214,8 @@ export interface ComponentDecoratorBuilder<
   ): ComponentDecoratorBuilder<
     TInitialProps,
     Pick<TResultingProps, Exclude<keyof TResultingProps, T3>>,
-    TOmittedProps | T3
+    TOmittedProps | T3,
+    TStatic
   >
 
   /**
@@ -216,7 +231,8 @@ export interface ComponentDecoratorBuilder<
   ): ComponentDecoratorBuilder<
     TInitialProps,
     TResultingProps & { [k in T3]: T5 } & { [k in T4]: (newState: T5) => T5 },
-    TOmittedProps
+    TOmittedProps,
+    TStatic
   >
 
   /**
@@ -231,7 +247,8 @@ export interface ComponentDecoratorBuilder<
   ): ComponentDecoratorBuilder<
     TInitialProps,
     TResultingProps & { [k in T3]: T5 } & { [k in T4]: (newState: T5) => T5 },
-    TOmittedProps
+    TOmittedProps,
+    TStatic
   >
 
   /**
@@ -252,7 +269,8 @@ export interface ComponentDecoratorBuilder<
   ): ComponentDecoratorBuilder<
     TInitialProps,
     TResultingProps & { [k in T3]: T4 },
-    TOmittedProps
+    TOmittedProps,
+    TStatic
   >
 
   /**
@@ -270,7 +288,8 @@ export interface ComponentDecoratorBuilder<
   ): ComponentDecoratorBuilder<
     TInitialProps,
     TResultingProps & { [K in keyof THandlers]: ReturnType<THandlers[K]> },
-    TOmittedProps
+    TOmittedProps,
+    TStatic
   >
 
   /**
@@ -281,7 +300,12 @@ export interface ComponentDecoratorBuilder<
    */
   onlyUpdateForProps(
     propNames: Array<keyof TResultingProps>,
-  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps, TOmittedProps>
+  ): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps,
+    TOmittedProps,
+    TStatic
+  >
 
   /**
    * Higher-order component version of shouldComponentUpdate().
@@ -292,21 +316,48 @@ export interface ComponentDecoratorBuilder<
       prevProps: TResultingProps,
       nextProps: TResultingProps,
     ) => boolean,
-  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps, TOmittedProps>
+  ): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps,
+    TOmittedProps,
+    TStatic
+  >
 
   /**
    * Allows to register component lifecycle methods like `componentDidMount` etc.
    */
   withLifecycle(
     lifecycleMethods: LifecycleMethods<TResultingProps>,
-  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps, TOmittedProps>
+  ): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps,
+    TOmittedProps,
+    TStatic
+  >
 
   /**
    * Assigns to the displayName property on the base component.
    */
   withDisplayName(
     displayName: string,
-  ): ComponentDecoratorBuilder<TInitialProps, TResultingProps, TOmittedProps>
+  ): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps,
+    TOmittedProps,
+    TStatic & { displayName: string }
+  >
+
+  /**
+   * Assigns given static properties to the resulting (top-most) component.
+   */
+  withStatic<TS extends {}>(
+    props: TS,
+  ): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps,
+    TOmittedProps,
+    TStatic & TS
+  >
 
   /**
    * Ensures component won't get rerendered unless identity of some prop changes.
@@ -314,11 +365,17 @@ export interface ComponentDecoratorBuilder<
   pure(): ComponentDecoratorBuilder<
     TInitialProps,
     TResultingProps,
-    TOmittedProps
+    TOmittedProps,
+    TStatic
   >
 
   /** Call this to create component decorator. */
-  build(): ComponentDecorator<TInitialProps, TResultingProps, TOmittedProps>
+  build(): ComponentDecorator<
+    TInitialProps,
+    TResultingProps,
+    TOmittedProps,
+    TStatic
+  >
 }
 
 // This are INNER props
@@ -338,32 +395,37 @@ export type Simplify<T> = Pick<T, keyof T>
 export abstract class AbstractComponentDecorator<
   TResultingProps,
   TInitialProps,
-  TOmittedProps extends string
+  TOmittedProps extends string,
+  TStaticProps extends {}
 > {
   // These are fake properties which allow us to chain decorators. They have no actual
   // runtime value. We just use them to pass static type info.
   private __initialProps: TInitialProps
   private __omittedProps: TOmittedProps
   private __resultingProps: TResultingProps
+  private __staticProps: TStaticProps
 }
 
 export interface ComponentDecorator<
   TInitialProps extends {} = any,
   TResultingProps extends {} = {},
-  TOmittedProps extends string = never
+  TOmittedProps extends string = never,
+  TStatic extends {} = {}
 >
   extends AbstractComponentDecorator<
       TResultingProps,
       TInitialProps,
-      TOmittedProps
+      TOmittedProps,
+      TStatic
     >,
-    GenericComponentDecorator<TResultingProps, TInitialProps> {}
+    GenericComponentDecorator<TResultingProps, TInitialProps, TStatic> {}
 
 export interface GenericComponentDecorator<
   TResultingProps extends {} = {},
-  TInitialProps extends {} = {}
+  TInitialProps extends {} = {},
+  TStatic extends {} = {}
 > {
   (
     component: DecoratedComponent<Simplify<TResultingProps>>,
-  ): DecoratedComponent<TInitialProps>
+  ): DecoratedComponent<TInitialProps> & TStatic
 }
