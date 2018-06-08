@@ -51,7 +51,7 @@ class RecompactComponentDecoratorBuilder<
   public withProps = createWrapper(withProps)
   public withPropsOnChange = createWrapper(withPropsOnChange)
   public withState = createWrapper(withState)
-  public onlyUpdateForKeys = createWrapper(onlyUpdateForKeys)
+  public onlyUpdateForProps = createWrapper(onlyUpdateForKeys)
   public shouldUpdate = createWrapper(shouldUpdate)
   public withHandlers = createWrapper(withHandlers)
   public withDisplayName = createWrapper(setDisplayName)
