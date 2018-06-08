@@ -1,3 +1,7 @@
+# 1.2.1 (June 8, 2018)
+
+* Fixed `onlyUpdateForProps` binding
+
 # 1.2.0 (June 7, 2018)
 
 * Simplified typings for ComponentDecorator (now inherits from AbstractComponentDecorator and GenericComponentDecorator). This should help in TS to infer generics in some edge cases.
