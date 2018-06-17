@@ -13,7 +13,7 @@ export type DecoratedSFC<P> = (
 ) => React.ReactElement<any> | null
 
 /**
- * Simplified React.ClassComponent
+ * Simplified React.ComponentClass
  */
 export interface DecoratedComponentClass<P> {
   new (props: P, context?: any): React.Component<any, any>
@@ -214,7 +214,7 @@ export interface ComponentDecoratorBuilder<
   ): ComponentDecoratorBuilder<
     TInitialProps,
     Pick<TResultingProps, Exclude<keyof TResultingProps, T3>>,
-    TOmittedProps | T3,
+    TOmittedProps | Extract<keyof T3, string>,
     TStatic
   >
 
