@@ -3,15 +3,15 @@
     "target": "es5",
     "module": "es2015",
     "moduleResolution": "node",
+    "jsx":"react",
     "strict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "lib": ["es6"],
-    "strict": true,
     "baseUrl": ".",
     "paths": {
       "recompost": ["index"]
     }
   },
-  "include": ["bindings/*.ts", "test/**/*.ts"]
+  "include": ["bindings/*.ts", "test/**/*.ts", "test/**/*.tsx"]
 }
