@@ -4,6 +4,6 @@
     "declaration": true,
   },
   "exclude": [
-    "../test/**/*.ts"
+    "../test/**/*.ts", "../test/**/*.tsx"
   ]
 }
