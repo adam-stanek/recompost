@@ -1,3 +1,7 @@
+# 1.3.0 (June 18, 2018)
+
+* Fixed exported type to work properly in JSX with new React typings
+
 # 1.2.1 (June 8, 2018)
 
 * Fixed `onlyUpdateForProps` binding
