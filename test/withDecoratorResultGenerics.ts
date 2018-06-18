@@ -24,7 +24,7 @@ const enhance = createComposer<{ a: number }>()
   .build()
 
 enhance(({ children, ...props }) => {
-  // $ExpectType { item: Item; a: number; b: number; }
+  // $ExpectType { a: number; item: Item; b: number; }
   props
 
   return null

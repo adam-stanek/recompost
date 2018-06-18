@@ -77,6 +77,7 @@ export interface ComponentDecoratorBuilder<
    */
   withDecorator<
     TDR extends {} = {},
+    // TDI extends Partial<TResultingProps> = TResultingProps,
     TDO extends string = never,
     TDS extends {} = {}
   >(
@@ -370,7 +371,7 @@ export interface ComponentDecoratorBuilder<
   >
 
   /** Call this to create component decorator. */
-  build(): ComponentDecorator<
+  build(): BuiltComponentDecorator<
     TInitialProps,
     TResultingProps,
     TOmittedProps,
@@ -418,14 +419,31 @@ export interface ComponentDecorator<
       TOmittedProps,
       TStatic
     >,
-    GenericComponentDecorator<TResultingProps, TInitialProps, TStatic> {}
+    GenericComponentDecorator<TResultingProps, TInitialProps> {}
 
 export interface GenericComponentDecorator<
   TResultingProps extends {} = {},
-  TInitialProps extends {} = {},
-  TStatic extends {} = {}
+  TInitialProps extends {} = {}
 > {
   (
     component: DecoratedComponent<Simplify<TResultingProps>>,
-  ): DecoratedComponent<TInitialProps> & TStatic
+  ): DecoratedComponent<TInitialProps>
+}
+
+export interface BuiltComponentDecorator<
+  TInitialProps extends {} = any,
+  TResultingProps extends {} = {},
+  TOmittedProps extends string = never,
+  TStatic extends {} = {}
+>
+  extends AbstractComponentDecorator<
+      TResultingProps,
+      Partial<TInitialProps>,
+      TOmittedProps,
+      TStatic
+    > {
+  (component: DecoratedComponent<TResultingProps>): React.ComponentClass<
+    TInitialProps
+  > &
+    TStatic
 }
