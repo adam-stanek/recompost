@@ -196,12 +196,24 @@ export interface ComponentDecoratorBuilder<
   /**
    * Gets value from context and passes it as a prop.
    */
-  withPropFromContext<TPropName extends string, TProps>(
-    propName: TPropName,
-    createProps: (propValue: any) => TProps,
+  withPropFromContext<TMappedProps>(
+    propName: string,
+    createProps: (propValue: any, props: TResultingProps) => TMappedProps,
   ): ComponentDecoratorBuilder<
     TInitialProps,
-    TResultingProps & TProps,
+    TResultingProps & TMappedProps,
+    TOmittedProps
+  >
+
+  /**
+   * Gets value from context and passes it as a prop.
+   */
+  withPropFromContext<T, TMappedProps>(
+    propName: React.Context<T>,
+    createProps: (propValue: T, props: TResultingProps) => TMappedProps,
+  ): ComponentDecoratorBuilder<
+    TInitialProps,
+    TResultingProps & TMappedProps,
     TOmittedProps
   >
 

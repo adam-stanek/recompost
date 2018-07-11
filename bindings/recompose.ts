@@ -2,7 +2,6 @@
 
 import * as React from 'react'
 import {
-  getContext,
   onlyUpdateForKeys,
   shouldUpdate,
   withHandlers,
@@ -20,6 +19,7 @@ import {
   ComponentDecoratorBuilder,
   ComponentDecorator,
   LifecycleMethods,
+  DecoratedComponent,
 } from '../abstract'
 
 const identity = <T>(value: T) => value
@@ -112,9 +112,12 @@ class RecompactComponentDecoratorBuilder<
     )
   }
 
-  public withPropFromContext(propName: string) {
+  public withPropFromContext(
+    propNameOrReactCtx: string | React.Context<any>,
+    mapper: (ctxProp: any, props: any) => {},
+  ) {
     return new RecompactComponentDecoratorBuilder(
-      [...this.funcs, getContext({ [propName]: propTypeStub })],
+      [...this.funcs, withPropFromContext(propNameOrReactCtx, mapper)],
       this.defaultProps,
       this.staticProps,
     )
@@ -163,4 +166,55 @@ class RecompactComponentDecoratorBuilder<
 
 export function createComposer<T>(): ComponentDecoratorBuilder<T> {
   return new RecompactComponentDecoratorBuilder([], undefined, undefined) as any
+}
+
+/**
+ * Custom withPropFromContext decorator because `getContext` from `recompose`
+ * doesn't support new React context and doesn't provide way to specify mapper function.
+ */
+function withPropFromContext(
+  propNameOrReactCtx: string | React.Context<any>,
+  mapper: (ctxProp: any, props: any) => {},
+) {
+  if (typeof propNameOrReactCtx === 'string') {
+    return (BaseComponent: React.ComponentType<any> | string) => {
+      const withPropFromContext: React.SFC<any> = (
+        { children, ...props },
+        context,
+      ) =>
+        React.createElement(
+          BaseComponent,
+          { ...props, ...mapper(propNameOrReactCtx, props) },
+          children,
+        )
+
+      withPropFromContext.contextTypes = {
+        [propNameOrReactCtx]: propTypeStub,
+      }
+
+      return withPropFromContext
+    }
+  } else {
+    return (BaseComponent: React.ComponentType<any> | string) => {
+      const withPropFromContext = ({ children, ...props }: any) =>
+        React.forwardRef((props, ref) =>
+          React.createElement(
+            propNameOrReactCtx.Consumer,
+            undefined,
+            (ctxProp: any) =>
+              React.createElement(
+                BaseComponent,
+                {
+                  ...props,
+                  ...mapper(ctxProp, props),
+                  ref,
+                },
+                children,
+              ),
+          ),
+        )
+
+      return withPropFromContext
+    }
+  }
 }
