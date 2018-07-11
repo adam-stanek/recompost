@@ -22,7 +22,8 @@ describe('ComponentDecoratorBuilder::withDefaultProps()', () => {
     ))
 
     const container = await render(<Foo />)
-    const renderedClassName = container.firstElementChild && container.firstElementChild.className
+    const renderedClassName =
+      container.firstElementChild && container.firstElementChild.className
     assert.strictEqual(renderedClassName, 'blue')
   })
 
@@ -39,7 +40,10 @@ describe('ComponentDecoratorBuilder::withDefaultProps()', () => {
 
     const container = await render(<Foo className="red" />)
     const renderedDiv = container.firstElementChild as HTMLDivElement
-    assert.strictEqual(renderedDiv.attributes.getNamedItem('class')!.value, 'red')
+    assert.strictEqual(
+      renderedDiv.attributes.getNamedItem('class')!.value,
+      'red',
+    )
   })
 
   it('merges default props with any existing props', async () => {
@@ -49,7 +53,9 @@ describe('ComponentDecoratorBuilder::withDefaultProps()', () => {
       role: string | undefined
     }
 
-    const SomeComponent: React.SFC<SomeComponentProps> = props => <div {...props} />
+    const SomeComponent: React.SFC<SomeComponentProps> = props => (
+      <div {...props} />
+    )
 
     SomeComponent.defaultProps = {
       className: 'red',
@@ -66,8 +72,17 @@ describe('ComponentDecoratorBuilder::withDefaultProps()', () => {
 
     const container = await render(<DecoratedComponent />)
     const renderedDiv = container.firstElementChild as HTMLDivElement
-    assert.strictEqual(renderedDiv.attributes.getNamedItem('class')!.value, 'blue')
-    assert.strictEqual(renderedDiv.attributes.getNamedItem('role')!.value, 'article')
-    assert.strictEqual(renderedDiv.attributes.getNamedItem('aria-hidden')!.value, 'false')
+    assert.strictEqual(
+      renderedDiv.attributes.getNamedItem('class')!.value,
+      'blue',
+    )
+    assert.strictEqual(
+      renderedDiv.attributes.getNamedItem('role')!.value,
+      'article',
+    )
+    assert.strictEqual(
+      renderedDiv.attributes.getNamedItem('aria-hidden')!.value,
+      'false',
+    )
   })
 })

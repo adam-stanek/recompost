@@ -13,12 +13,15 @@ describe('ComponentDecoratorBuilder::withHandlers()', () => {
     const decorate = createComposer<NameProps>()
       .withHandlers(() => {
         return {
-          composeSalutation: ({ name }) => (salutation: string) => `${salutation} ${name}!`,
+          composeSalutation: ({ name }) => (salutation: string) =>
+            `${salutation} ${name}!`,
         }
       })
       .build()
 
-    const Foo = decorate(({ composeSalutation }) => <div>{composeSalutation('Hi')}</div>)
+    const Foo = decorate(({ composeSalutation }) => (
+      <div>{composeSalutation('Hi')}</div>
+    ))
 
     const container = await render(<Foo name="Bob" />)
     assert.strictEqual(container.innerHTML, '<div>Hi Bob!</div>')

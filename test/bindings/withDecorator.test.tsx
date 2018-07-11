@@ -24,7 +24,11 @@ describe('ComponentDecoratorBuilder::withDecorator()', () => {
       enhancedComponent:
         | React.SFC<NameWithSalutationProps>
         | React.ComponentClass<NameWithSalutationProps>,
-    ) => React.SFC<NameProps> = salutation => enhancedComponent => ({ name, children, ...props }) =>
+    ) => React.SFC<NameProps> = salutation => enhancedComponent => ({
+      name,
+      children,
+      ...props
+    }) =>
       React.createElement(
         enhancedComponent,
         {
@@ -53,8 +57,13 @@ describe('ComponentDecoratorBuilder::withDecorator()', () => {
       .withDecorator(withDefaultClassName)
       .build()
 
-    const Foo = decorate(({ className, name }) => <div className={className}>{name}</div>)
+    const Foo = decorate(({ className, name }) => (
+      <div className={className}>{name}</div>
+    ))
     const container = await render(<Foo name="Alice" />)
-    assert.strictEqual(container.innerHTML, '<div class="someClass">Alice</div>')
+    assert.strictEqual(
+      container.innerHTML,
+      '<div class="someClass">Alice</div>',
+    )
   })
 })

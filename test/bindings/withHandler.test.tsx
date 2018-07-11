@@ -16,7 +16,9 @@ describe('ComponentDecoratorBuilder::withHandler()', () => {
       )
       .build()
 
-    const Foo = decorate(({ composeSalutation }) => <div>{composeSalutation('Hi')}</div>)
+    const Foo = decorate(({ composeSalutation }) => (
+      <div>{composeSalutation('Hi')}</div>
+    ))
 
     const container = await render(<Foo name="Bob" />)
     assert.strictEqual(container.innerHTML, '<div>Hi Bob!</div>')

@@ -28,7 +28,10 @@ describe('ComponentDecoratorBuilder::append()', () => {
     ))
 
     const container = await render(<Foo name="Bob" />)
-    assert.strictEqual(container.innerHTML, '<div class="salutation">Hello, Bob!</div>')
+    assert.strictEqual(
+      container.innerHTML,
+      '<div class="salutation">Hello, Bob!</div>',
+    )
   })
 })
 
@@ -58,7 +61,16 @@ it('it works with class components', async () => {
 
   const container = await render(<DecoratedComponent />)
   const renderedDiv = container.firstElementChild as HTMLDivElement
-  assert.strictEqual(renderedDiv.attributes.getNamedItem('class')!.value, 'blue')
-  assert.strictEqual(renderedDiv.attributes.getNamedItem('role')!.value, 'article')
-  assert.strictEqual(renderedDiv.attributes.getNamedItem('aria-hidden')!.value, 'false')
+  assert.strictEqual(
+    renderedDiv.attributes.getNamedItem('class')!.value,
+    'blue',
+  )
+  assert.strictEqual(
+    renderedDiv.attributes.getNamedItem('role')!.value,
+    'article',
+  )
+  assert.strictEqual(
+    renderedDiv.attributes.getNamedItem('aria-hidden')!.value,
+    'false',
+  )
 })
