@@ -196,8 +196,8 @@ function withPropFromContext(
     }
   } else {
     return (BaseComponent: React.ComponentType<any> | string) => {
-      const withPropFromContext = ({ children, ...props }: any) =>
-        React.forwardRef((props, ref) =>
+      const withPropFromContext = React.forwardRef(
+        ({ children, ...props }, ref) =>
           React.createElement(
             propNameOrReactCtx.Consumer,
             undefined,
@@ -212,7 +212,7 @@ function withPropFromContext(
                 children,
               ),
           ),
-        )
+      )
 
       return withPropFromContext
     }
