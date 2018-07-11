@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { render } from 'test/utils/render'
 import { assert } from 'chai'
 
 import { createComposer } from 'recompost'
+import { render } from 'test/utils/render'
 
 interface NameProps {
   name: string
