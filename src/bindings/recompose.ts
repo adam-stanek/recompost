@@ -26,7 +26,7 @@ const identity = <T>(value: T) => value
 
 // This is a stub for a React propTypes validator. We don't use propTypes with react
 // but we still need to be able to set context requirements.
-const propTypeStub: React.Validator<any> = () => null
+export const propTypeStub: React.Validator<any> = () => null
 
 const safelyMergeObj = (a: object | undefined, b: object | undefined) =>
   a && b ? Object.assign({}, a, b) : a || b
@@ -184,7 +184,7 @@ function withPropFromContext(
       ) =>
         React.createElement(
           BaseComponent,
-          { ...props, ...mapper(propNameOrReactCtx, props) },
+          { ...props, ...mapper(context[propNameOrReactCtx], props) },
           children,
         )
 
