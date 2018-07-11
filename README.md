@@ -425,8 +425,8 @@ const Salutation = enhance(props => {
 
 # Who uses Recompost
 
-* [Ataccama Software, s.r.o.](https://www.ataccama.com/)
-* [V3Net.cz, s.r.o.](http://www.v3net.cz)
+- [Ataccama Software, s.r.o.](https://www.ataccama.com/)
+- [V3Net.cz, s.r.o.](http://www.v3net.cz)
 
 # Credits
 
