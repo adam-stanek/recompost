@@ -385,7 +385,44 @@ import { Button } from './button'
 The `withDisplayName()` can be used as a shortcut for
 `withStatic({ displayName: /* ... */ })`.
 
+# Using it together with class components
+
+The library was meant to be used together with stateless components (SFC).
+However if your use-case is better suited for class components you can do it
+like this:
+
+```.tsx
+import { createComposer } from 'recompost'
+
+export interface SalutationProps {
+  name: string
+}
+
+const enhance = createComposer<SalutationProps>()
+  .withProps(({ name }) => ({
+    salutation: `Hello, ${name}`,
+  }))
+  .build()
+
+const Salutation = enhance(props => {
+  // Create class component inside of enhance
+  // Use `typeof` operator to get the prop type
+  class ClassComponent extends React.Component<typeof props> {
+    render() {
+      const { salutation } = this.props
+
+      return (
+        <div>{salutation}</div>
+      )
+    }
+  }
+
+  // Return new element using the class component because the callback
+  // has to be valid SFC by itself.
+  return React.createElement(ClassComponent, props)
+})
 ```
+
 # Who uses Recompost
 
 * [Ataccama Software, s.r.o.](https://www.ataccama.com/)
@@ -394,4 +431,3 @@ The `withDisplayName()` can be used as a shortcut for
 # Credits
 
 My thanks to the [@belaczek](https://github.com/belaczek) for the logo :)
-```
