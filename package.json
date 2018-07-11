@@ -12,6 +12,7 @@
   "typings": "index.d.ts",
   "dependencies": {
     "@types/react": "^16",
+    "dtslint": "^0.3.0",
     "lodash.omit": "^4.5.0",
     "recompose": "^0.25.0"
   },
@@ -19,12 +20,11 @@
     "@types/lodash.omit": "^4.5.3",
     "@types/recompose": "^0.24.7",
     "prettier": "^1.11.1",
-    "typescript": "^2.8.1",
-    "typings-checker": "^2.0.0"
+    "typescript": "^2.9.2"
   },
   "scripts": {
     "build": "tsc -p bindings",
-    "test": "typings-checker --allow-expect-error test/*.{ts,tsx}",
-    "prettier": "prettier --write \"bindings/**/*.ts\" \"test/**/*.ts\" README.md CHANGELOG.md tsconfig.json .prettierrc"
+    "test": "dtslint test",
+    "prettier": "prettier --write \"bindings/**/*.ts\" \"test/**/*.{ts,tsx}\" README.md CHANGELOG.md tsconfig.json .prettierrc"
   }
 }

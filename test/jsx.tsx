@@ -9,5 +9,5 @@ const enhance = createComposer<{ foo: string }>()
 
 const TestComponent = enhance(() => null)
 
-// $ExpectError Type 'number' is not assignable to type 'string'.
+// $ExpectError
 const test = <TestComponent foo={123} />

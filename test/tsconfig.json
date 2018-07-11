@@ -14,8 +14,7 @@
     "lib": ["es6"],
     "baseUrl": ".",
     "paths": {
-      "recompost": ["index"]
+      "recompost": ["../index"]
     }
-  },
-  "include": ["bindings/*.ts", "test/**/*.ts", "test/**/*.tsx"]
+  }
 }

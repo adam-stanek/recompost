@@ -1,6 +1,6 @@
 import { createComposer } from 'recompost'
 
-const enhance = createComposer<{ foo?: string | number }>()
+const enhance = createComposer<{ foo?: string | boolean }>()
   .withDefaultProps({
     foo: 'DEFAULT',
   })
@@ -8,7 +8,7 @@ const enhance = createComposer<{ foo?: string | number }>()
 
 enhance(({ children, ...props }) => {
   // The optionality of the prop must be removed
-  // $ExpectType { foo: string | number; }
+  // $ExpectType { foo: string | boolean; }
   props
 
   return null
