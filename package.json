@@ -8,8 +8,8 @@
     "type": "git",
     "url": "git://github.com/adam-stanek/recompost.git"
   },
-  "main": "index.js",
-  "typings": "index.d.ts",
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
   "dependencies": {
     "@types/react": "^16",
     "dtslint": "^0.3.0",
@@ -17,14 +17,35 @@
     "recompose": "^0.27.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.1.3",
     "@types/lodash.omit": "^4.5.3",
+    "@types/mocha": "^5.2.0",
+    "@types/react-dom": "^16.0.6",
     "@types/recompose": "^0.26.1",
+    "chai": "^4.1.2",
+    "istanbul-instrumenter-loader": "^3.0.1",
+    "karma": "^2.0.2",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage-istanbul-reporter": "^2.0.1",
+    "karma-mocha": "^1.3.0",
+    "karma-nyan-reporter": "^0.2.5",
+    "karma-source-map-support": "^1.3.0",
+    "karma-webpack": "^3.0.0",
+    "mocha": "^5.2.0",
     "prettier": "^1.13.7",
-    "typescript": "^2.9.2"
+    "react": "^16.4.0",
+    "react-dom": "^16.4.0",
+    "source-map-loader": "^0.2.3",
+    "ts-loader": "^4.4.2",
+    "tsconfig-paths-webpack-plugin": "^3.2.0",
+    "typescript": "^2.9.2",
+    "webpack": "^4.12.0"
   },
   "scripts": {
-    "build": "tsc -p bindings",
-    "test": "dtslint test",
-    "prettier": "prettier --write \"bindings/**/*.ts\" \"test/**/*.{ts,tsx}\" README.md CHANGELOG.md tsconfig.json .prettierrc"
+    "build": "tsc -p src",
+    "test": "yarn run dtslint && yarn run karma",
+    "prettier": "prettier --write \"src/**/*.ts\" \"test/**/*.{ts,tsx}\" karma.conf.js README.md CHANGELOG.md tsconfig.json .prettierrc",
+    "dtslint": "dtslint test/typings",
+    "karma": "karma start --single-run --browsers ChromeHeadless karma.conf.js"
   }
 }

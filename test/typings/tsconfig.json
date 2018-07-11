@@ -14,7 +14,7 @@
     "lib": ["es6"],
     "baseUrl": ".",
     "paths": {
-      "recompost": ["../index"]
+      "recompost": ["../../src/index"]
     }
   }
 }

@@ -413,10 +413,10 @@ export abstract class AbstractComponentDecorator<
 > {
   // These are fake properties which allow us to chain decorators. They have no actual
   // runtime value. We just use them to pass static type info.
-  private __initialProps: TInitialProps
-  private __omittedProps: TOmittedProps
-  private __resultingProps: TResultingProps
-  private __staticProps: TStaticProps
+  private __initialProps!: TInitialProps
+  private __omittedProps!: TOmittedProps
+  private __resultingProps!: TResultingProps
+  private __staticProps!: TStaticProps
 }
 
 export interface ComponentDecorator<
