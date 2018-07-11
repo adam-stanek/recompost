@@ -12,7 +12,6 @@
   "typings": "build/index.d.ts",
   "dependencies": {
     "@types/react": "^16",
-    "dtslint": "^0.3.0",
     "lodash.omit": "^4.5.0",
     "recompose": "^0.27.1"
   },
@@ -23,6 +22,7 @@
     "@types/react-dom": "^16.0.6",
     "@types/recompose": "^0.26.1",
     "chai": "^4.1.2",
+    "dtslint": "^0.3.0",
     "istanbul-instrumenter-loader": "^3.0.1",
     "karma": "^2.0.2",
     "karma-chrome-launcher": "^2.2.0",
