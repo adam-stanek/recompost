@@ -15,33 +15,53 @@ interface FooContext {
 }
 
 describe('ComponentDecoratorBuilder::withPropFromContext()', () => {
-  it('it retrieves value from context and passes it as a prop', async () => {
-    class ContextProvider extends React.Component<{}> {
-      public static childContextTypes: ContextTypes<FooContext> = {
-        foo: propTypeStub,
+  describe('for context passed as string (old React)', () => {
+    it('it retrieves value from context and passes it as a prop', async () => {
+      class ContextProvider extends React.Component<{}> {
+        public static childContextTypes: ContextTypes<FooContext> = {
+          foo: propTypeStub,
+        }
+  
+        public getChildContext(): FooContext {
+          return { foo: 123 }
+        }
+  
+        public render() {
+          return this.props.children
+        }
       }
+  
+      const decorate = createComposer()
+        .withPropFromContext('foo', (foo: number) => ({ foo }))
+        .build()
+  
+      const Foo = decorate(({ foo }) => <div>Foo = {foo}</div>)
+  
+      const container = await render(
+        <ContextProvider>
+          <Foo />
+        </ContextProvider>,
+      )
+  
+      assert.strictEqual(container.innerHTML, '<div>Foo = 123</div>')
+    })
+  })
 
-      public getChildContext(): FooContext {
-        return { foo: 123 }
-      }
-
-      public render() {
-        return this.props.children
-      }
-    }
-
-    const decorate = createComposer()
-      .withPropFromContext('foo', (foo: number) => ({ foo }))
-      .build()
-
-    const Foo = decorate(({ foo }) => <div>Foo = {foo}</div>)
-
-    const container = await render(
-      <ContextProvider>
+  describe('for new context API (React >= 16.3)', () => {
+    it('it retrieves value from context and passes it as a prop', async () => {
+      const MyContext = React.createContext<FooContext>({ foo: 123 })
+  
+      const decorate = createComposer()
+        .withPropFromContext(MyContext, (ctxProp) => ({ foo: ctxProp.foo }))
+        .build()
+  
+      const Foo = decorate(({ foo }) => <div>Foo = {foo}</div>)
+  
+      const container = await render(
         <Foo />
-      </ContextProvider>,
-    )
-
-    assert.strictEqual(container.innerHTML, '<div>Foo = 123</div>')
+      )
+  
+      assert.strictEqual(container.innerHTML, '<div>Foo = 123</div>')
+    })
   })
 })
