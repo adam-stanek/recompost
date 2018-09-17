@@ -8,7 +8,6 @@ import {
   mapProps,
   withProps,
   withPropsOnChange,
-  withState,
   pure,
   lifecycle,
   setDisplayName,
@@ -50,7 +49,6 @@ class RecompactComponentDecoratorBuilder<
   // Wrapped recompose functions
   public withProps = createWrapper(withProps)
   public withPropsOnChange = createWrapper(withPropsOnChange)
-  public withState = createWrapper(withState)
   public onlyUpdateForProps = createWrapper(onlyUpdateForKeys)
   public shouldUpdate = createWrapper(shouldUpdate)
   public withHandlers = createWrapper(withHandlers)
@@ -118,6 +116,22 @@ class RecompactComponentDecoratorBuilder<
   ) {
     return new RecompactComponentDecoratorBuilder(
       [...this.funcs, withPropFromContext(propNameOrReactCtx, mapper)],
+      this.defaultProps,
+      this.staticProps,
+    )
+  }
+
+  public withState(
+    stateName: string,
+    stateUpdaterName: string,
+    initialState: any,
+    derivedStateFn?: (props: any, prevState: any) => any,
+  ) {
+    return new RecompactComponentDecoratorBuilder(
+      [
+        ...this.funcs,
+        withState(stateName, stateUpdaterName, initialState, derivedStateFn),
+      ],
       this.defaultProps,
       this.staticProps,
     )
@@ -217,4 +231,92 @@ function withPropFromContext(
       return withPropFromContext
     }
   }
+}
+
+// type of the initialState mapper function in withState decorator
+type StateMapper<TInner, TOutter> = (input: TInner) => TOutter
+
+type StateProps<
+  TState,
+  TStateName extends string,
+  TStateUpdaterName extends string
+> = { [stateName in TStateName]: TState } &
+  { [stateUpdateName in TStateUpdaterName]: (state: TState) => TState }
+
+interface WrappedState<TState> {
+  readonly stateValue: TState
+}
+
+/* State value in custom withState is wrapped to avoid react warning about state not being an object */
+function wrapState<TState>(stateValue: TState): WrappedState<TState> {
+  return {
+    stateValue,
+  }
+}
+
+/**
+ * Custom withState decoreator,
+ * with added support for static getDerivedStateFromProps lifecycle method as a fourth argument
+ */
+function withState<
+  TInitialProps,
+  TState,
+  TStateName extends string,
+  TStateUpdaterName extends string
+>(
+  stateName: TStateName,
+  stateUpdaterName: TStateUpdaterName,
+  initialState: TState | StateMapper<TInitialProps, TState>,
+  derivedStateFn?: (props: TInitialProps, prevState: TState) => TState,
+): ComponentDecorator<
+  TInitialProps,
+  StateProps<TState, TStateName, TStateUpdaterName>
+> {
+  return ((BaseComponent: React.ComponentType) => {
+    // const Component = React.createElement(BaseComponent)
+    class WithDerivedState extends React.Component<
+      TInitialProps,
+      WrappedState<TState>
+    > {
+      static getDerivedStateFromProps = (
+        props: TInitialProps,
+        state: WrappedState<TState>,
+      ) => {
+        if (typeof derivedStateFn === 'function') {
+          const stateValue = derivedStateFn(props, state.stateValue)
+          return stateValue !== null ? wrapState(stateValue) : null
+        }
+        return null
+      }
+
+      state = wrapState(
+        typeof initialState === 'function'
+          ? initialState(this.props)
+          : initialState,
+      )
+
+      updateStateValue = (
+        updateFn: ((state: TState) => TState) | TState,
+        callback: () => void,
+      ) =>
+        this.setState(
+          (state: WrappedState<TState>) =>
+            wrapState(
+              typeof updateFn === 'function'
+                ? updateFn(state.stateValue)
+                : updateFn,
+            ),
+          callback,
+        )
+
+      render() {
+        return React.createElement(BaseComponent, {
+          ...(this.props as {}),
+          [stateName]: this.state.stateValue,
+          [stateUpdaterName]: this.updateStateValue,
+        })
+      }
+    }
+    return WithDerivedState
+  }) as any
 }

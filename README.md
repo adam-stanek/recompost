@@ -165,11 +165,15 @@ const enhance = createComposer<{}>()
 ## State
 
 ```.ts
-// .withState(propName: string, setterPropName: string, initialValue: TState)
-// .withState(propName: string, setterPropName: string, initialValueMapper: (props: TPreviousProps) => TState)
+// .withState(propName: string, setterPropName: string, initialValue: TState, derivedStateFromProps?: (props: TPreviousProps, state: TState) => Partial<TState> | null)
+// .withState(propName: string, setterPropName: string, initialValueMapper: (props: TPreviousProps) => TState, derivedStateFromProps?: (props: TPreviousProps, state: TState) => Partial<TState> | null)
 
 const enhance = createComposer<{}>()
-  .withState('counter', 'setCounter', 0)
+  .withState('counter', 'setCounter', 0, (props, state) => {
+    // derived state logic here
+    // returning null doesn't make any changes to existing state
+    return null
+  })
   .withHandler('handleIncrementClick', ({ counter, setCounter }) => (e: React.MouseEvent<any>) => {
     e.preventDefault()
     setCounter(counter + 1)
@@ -190,7 +194,11 @@ const Counter = enhance(({
 Creates two additional props to the base component: a state value, and a
 function to update that state value. The type of the prop is inferred from the
 passed initial value which may be optionally specified using mapper function
-from component's props.
+from component's props. On top of that, there is an optional support for
+`getDerivedStateFromProps` lifecycle method specified by mapper function in
+derivedStateFromProps argument which is then called on every component update.
+Unlike other lifecycle methods, this one has to be defined here in the `setState`
+decorator.
 
 Note: The initial value is required for type inference to work. If you want the
 state to be undefined you can explicitly type it. Ie. as `(number) undefined`.
