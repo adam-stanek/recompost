@@ -234,6 +234,7 @@ export interface ComponentDecoratorBuilder<
   /**
    * Creates two additional props to the base component: a state value, and a function to update that state value.
    * The initial value is created from props by given callback.
+   * The state value can be derived from props on each update by given callback as the fourth parameter
    *
    * Further info: https://neoziro.github.io/recompact/#withstatestatename-stateupdatername-initialstate
    */
@@ -241,6 +242,10 @@ export interface ComponentDecoratorBuilder<
     propName: T3,
     setterPropName: T4,
     initiaValueFromProps: (props: TResultingProps) => T5,
+    derivedStateFromProps?: (
+      props: TResultingProps,
+      state: T5,
+    ) => Partial<T5> | null,
   ): ComponentDecoratorBuilder<
     TInitialProps,
     TResultingProps & { [k in T3]: T5 } & { [k in T4]: (newState: T5) => T5 },
@@ -250,6 +255,7 @@ export interface ComponentDecoratorBuilder<
 
   /**
    * Creates two additional props to the base component: a state value, and a function to update that state value.
+   * The state value can be derived from props on each update by given callback as the fourth parameter
    *
    * Further info: https://neoziro.github.io/recompact/#withstatestatename-stateupdatername-initialstate
    */
@@ -257,6 +263,10 @@ export interface ComponentDecoratorBuilder<
     propName: T3,
     setterPropName: T4,
     initialValue: T5,
+    derivedStateFromProps?: (
+      props: TResultingProps,
+      state: T5,
+    ) => T5 | null,
   ): ComponentDecoratorBuilder<
     TInitialProps,
     TResultingProps & { [k in T3]: T5 } & { [k in T4]: (newState: T5) => T5 },
