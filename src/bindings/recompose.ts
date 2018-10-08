@@ -139,7 +139,7 @@ class RecompactComponentDecoratorBuilder<
 
   public withLifecycle(lifecycleMethods: LifecycleMethods<any>) {
     return new RecompactComponentDecoratorBuilder(
-      [...this.funcs, lifecycle(lifecycleMethods)],
+      [...this.funcs, lifecycle(lifecycleMethods as any)],
       this.defaultProps,
       this.staticProps,
     )
@@ -291,19 +291,19 @@ function withState<
 
       state = wrapState(
         typeof initialState === 'function'
-          ? initialState(this.props)
+          ? (initialState as StateMapper<any, any>)(this.props)
           : initialState,
       )
 
       updateStateValue = (
-        updateFn: ((state: TState) => TState) | TState,
+        updateFn: StateMapper<TState, TState> | TState,
         callback: () => void,
       ) =>
         this.setState(
           (state: WrappedState<TState>) =>
             wrapState(
               typeof updateFn === 'function'
-                ? updateFn(state.stateValue)
+                ? (updateFn as StateMapper<TState, TState>)(state.stateValue)
                 : updateFn,
             ),
           callback,
