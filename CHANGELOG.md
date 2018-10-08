@@ -1,3 +1,8 @@
+# 1.6.0 (October 8, 2018)
+
+- typings fixed for Typescript 3.1 (it introduced `typeof x === 'function'`
+  breaking change)
+
 # 1.5.0 (September 26, 2018)
 
 - `withState` now accepts optional 4th parameter to specify
