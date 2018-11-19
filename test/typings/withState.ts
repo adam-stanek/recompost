@@ -8,7 +8,7 @@ enhance(props => {
   // $ExpectType boolean
   props.isActive
 
-  // $ExpectType (newState: boolean) => boolean
+  // $ExpectType (updateFn: boolean | ((input: boolean) => boolean), callback?: (() => void) | undefined) => boolean
   props.setActive
 
   return null

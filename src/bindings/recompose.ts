@@ -241,7 +241,7 @@ type StateProps<
   TStateName extends string,
   TStateUpdaterName extends string
 > = { [stateName in TStateName]: TState } &
-  { [stateUpdateName in TStateUpdaterName]: (state: TState) => TState }
+  { [stateUpdateName in TStateUpdaterName]: (updateFn: TState | (StateMapper<TState, TState>), callback?: () => void) => TState }
 
 interface WrappedState<TState> {
   readonly stateValue: TState

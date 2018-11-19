@@ -341,7 +341,7 @@ const enhance = createComposer<{ name: string }>
 # Static props
 
 ```.ts
-// .withState(staticProps: { [k: string]: any })
+// .withStatic(staticProps: { [k: string]: any })
 // .withDisplayName(name: string)
 ```
 
