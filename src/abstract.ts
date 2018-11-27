@@ -248,7 +248,7 @@ export interface ComponentDecoratorBuilder<
     ) => Partial<T5> | null,
   ): ComponentDecoratorBuilder<
     TInitialProps,
-    TResultingProps & { [k in T3]: T5 } & { [k in T4]: (newState: T5) => T5 },
+    TResultingProps & { [k in T3]: T5 } & { [k in T4]: (updateFn: T5 | ((input: T5) => T5), callback?: () => void) => T5 },
     TOmittedProps,
     TStatic
   >
@@ -269,7 +269,7 @@ export interface ComponentDecoratorBuilder<
     ) => T5 | null,
   ): ComponentDecoratorBuilder<
     TInitialProps,
-    TResultingProps & { [k in T3]: T5 } & { [k in T4]: (newState: T5) => T5 },
+    TResultingProps & { [k in T3]: T5 } & { [k in T4]: (updateFn: T5 | ((input: T5) => T5), callback?: () => void) => T5 },
     TOmittedProps,
     TStatic
   >
