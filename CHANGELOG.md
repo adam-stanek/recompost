@@ -1,3 +1,9 @@
+# 1.7.0 (November 27, 2018)
+
+- improved type of `setState` handler injected by `withState` - it now accepts
+  thunk as a parameter and supports callbacks on successful render (thanks
+  [@leshakoss](https://github.com/leshakoss))
+
 # 1.6.0 (October 8, 2018)
 
 - typings fixed for Typescript 3.1 (it introduced `typeof x === 'function'`

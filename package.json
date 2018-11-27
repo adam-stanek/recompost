@@ -1,7 +1,7 @@
 {
   "name": "recompost",
   "description": "Typed binding for recompose/recompact functions with fluent interface builder pattern",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "author": "Adam Staněk <adam.stanek@v3net.cz>",
   "license": "MIT",
   "repository": {
