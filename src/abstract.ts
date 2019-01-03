@@ -248,7 +248,14 @@ export interface ComponentDecoratorBuilder<
     ) => Partial<T5> | null,
   ): ComponentDecoratorBuilder<
     TInitialProps,
-    TResultingProps & { [k in T3]: T5 } & { [k in T4]: (updateFn: T5 | ((input: T5) => T5), callback?: () => void) => T5 },
+    TResultingProps &
+      { [k in T3]: T5 } &
+      {
+        [k in T4]: (
+          updateFn: T5 | ((input: T5) => T5),
+          callback?: () => void,
+        ) => T5
+      },
     TOmittedProps,
     TStatic
   >
@@ -263,13 +270,17 @@ export interface ComponentDecoratorBuilder<
     propName: T3,
     setterPropName: T4,
     initialValue: T5,
-    derivedStateFromProps?: (
-      props: TResultingProps,
-      state: T5,
-    ) => T5 | null,
+    derivedStateFromProps?: (props: TResultingProps, state: T5) => T5 | null,
   ): ComponentDecoratorBuilder<
     TInitialProps,
-    TResultingProps & { [k in T3]: T5 } & { [k in T4]: (updateFn: T5 | ((input: T5) => T5), callback?: () => void) => T5 },
+    TResultingProps &
+      { [k in T3]: T5 } &
+      {
+        [k in T4]: (
+          updateFn: T5 | ((input: T5) => T5),
+          callback?: () => void,
+        ) => T5
+      },
     TOmittedProps,
     TStatic
   >
@@ -399,6 +410,14 @@ export interface ComponentDecoratorBuilder<
     TOmittedProps,
     TStatic
   >
+
+  /** Call this to create class component decorator */
+  buildClassDecorator(): BuiltClassDecorator<
+    TInitialProps,
+    TResultingProps,
+    TOmittedProps,
+    TStatic
+  >
 }
 
 // This are INNER props
@@ -468,4 +487,23 @@ export interface BuiltComponentDecorator<
     TInitialProps
   > &
     TStatic
+}
+
+export interface BuiltClassDecorator<
+  TInitialProps extends {} = any,
+  TResultingProps extends {} = {},
+  TOmittedProps extends string = never,
+  TStatic extends {} = {}
+>
+  extends AbstractComponentDecorator<
+      TResultingProps,
+      Partial<TInitialProps>,
+      TOmittedProps,
+      TStatic
+    > {
+  (
+    callback: (
+      BaseComponent: React.ComponentClass<TResultingProps>,
+    ) => React.ComponentClass<TResultingProps>,
+  ): React.ComponentClass<TInitialProps> & TStatic
 }

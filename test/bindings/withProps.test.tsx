@@ -21,4 +21,22 @@ describe('ComponentDecoratorBuilder::withProps()', () => {
     const container = await render(<Salutation name="Bob" />)
     assert.strictEqual(container.innerHTML, '<div>Hello Bob!</div>')
   })
+
+  it('it appends resulting props to class component', async () => {
+    const enhance = createComposer<NameProps>()
+      .withProps(({ name }) => ({
+        salutation: `Hello ${name}!`,
+      }))
+      .buildClassDecorator()
+
+    const Salutation = enhance(BaseComponent => class extends BaseComponent {
+      render() {
+        return <div>{this.props.salutation}</div>
+      }
+    })
+
+    const container = await render(<Salutation name="Bob" />)
+    assert.strictEqual(container.innerHTML, '<div>Hello Bob!</div>')
+  })
 })
+

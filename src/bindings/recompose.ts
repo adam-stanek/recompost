@@ -176,6 +176,19 @@ class RecompactComponentDecoratorBuilder<
       return enhancedComponent
     }
   }
+
+  public buildClassDecorator() {
+    const decorator = this.build()
+
+    return (
+      factory: (
+        BaseComponent: React.ComponentClass<any>,
+      ) => React.ComponentClass<any>,
+    ) => {
+      const Component = factory(React.Component)
+      return decorator(props => React.createElement(Component, props))
+    }
+  }
 }
 
 export function createComposer<T>(): ComponentDecoratorBuilder<T> {
@@ -241,7 +254,12 @@ type StateProps<
   TStateName extends string,
   TStateUpdaterName extends string
 > = { [stateName in TStateName]: TState } &
-  { [stateUpdateName in TStateUpdaterName]: (updateFn: TState | (StateMapper<TState, TState>), callback?: () => void) => TState }
+  {
+    [stateUpdateName in TStateUpdaterName]: (
+      updateFn: TState | (StateMapper<TState, TState>),
+      callback?: () => void,
+    ) => TState
+  }
 
 interface WrappedState<TState> {
   readonly stateValue: TState
@@ -255,7 +273,7 @@ function wrapState<TState>(stateValue: TState): WrappedState<TState> {
 }
 
 /**
- * Custom withState decoreator,
+ * Custom withState decorator,
  * with added support for static getDerivedStateFromProps lifecycle method as a fourth argument
  */
 function withState<
